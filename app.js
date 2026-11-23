@@ -1015,12 +1015,15 @@ function verifikasiMasuk() {
 }
 function setPlafonDana() {
   const input = prompt('Masukkan nominal Plafon Dana Tetap Kas Kecil (Rp):', '1500000');
+  if (input === null) return;
   const nominal = Number(input);
-  if (!nominal || nominal <= 0) return;
+  if (!nominal || nominal <= 0) {
+    showToast('Masukkan angka nominal yang valid!');
+    return;
+  }
 
   state.imprestLimit = nominal;
 
-  // Opsional: langsung buat jurnal pembentukan kas kecil
   if (confirm(`Catat juga jurnal pembentukan Kas Kecil sebesar ${formatRp(nominal)} ke Jurnal Umum?`)) {
     const today = getTodayISO();
     const ref = 'PFN-' + Date.now().toString().slice(-4);
@@ -1035,7 +1038,3 @@ function setPlafonDana() {
   showToast(`Plafon Dana Tetap berhasil diatur ke ${formatRp(nominal)}!`);
   renderAll();
 }
-
-document.getElementById('btnSetPlafon')?.addEventListener('click', setPlafonDana);
-
-
