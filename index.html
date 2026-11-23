@@ -3,54 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cafe Pet De Anin — POS Kasir & Akuntansi Pastel</title>
+  <title>Pet Shop De Anin — Admin Penjualan & Petty Cash</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-  <div class="app-shell">
+
+  <!-- ========================================== -->
+  <!-- HALAMAN VERIFIKASI AWAL ADMIN (LOLLIPOP)   -->
+  <!-- ========================================== -->
+  <div class="auth-screen no-print" id="authScreen">
+    <div class="floating-pet pet-1">🐾</div>
+    <div class="floating-pet pet-2">🐱</div>
+    <div class="floating-pet pet-3">🐶</div>
+    <div class="floating-pet pet-4">🐹</div>
+    <div class="floating-pet pet-5">🦴</div>
+
+    <div class="auth-card">
+      <div class="auth-badge">✨ Portal Khusus Admin Keuangan</div>
+      <div class="auth-logo">🐾</div>
+      <h1>Pet Shop De Anin</h1>
+      <p class="auth-desc">Verifikasi identitas Admin untuk mengakses sistem <strong>Penjualan & Petty Cash (Imprest)</strong>.</p>
+
+      <form id="authForm" class="auth-form">
+        <div class="form-group">
+          <label for="authIdentity"><i class="fa-solid fa-envelope"></i> Email atau No. Telepon Admin</label>
+          <input type="text" id="authIdentity" class="input-field" placeholder="admin@petshopdeanin.com / 0812xxxx" required />
+        </div>
+        <div class="form-group">
+          <label for="authPin"><i class="fa-solid fa-shield-halved"></i> PIN Verifikasi Petty Cash (6 Digit)</label>
+          <input type="password" id="authPin" class="input-field" placeholder="Masukkan PIN Admin (Demo: 123456)" maxlength="6" required />
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <button type="submit" class="btn-primary btn-block auth-submit">
+          <i class="fa-solid fa-unlock-keyhole"></i> Verifikasi & Masuk Dashboard
+        </button>
+      </form>
+
+      <div class="auth-hint">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Info Demo: Isi Email/No. HP bebas & PIN <strong>123456</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- HALAMAN UTAMA APLIKASI (6 ROOM)            -->
+  <!-- ========================================== -->
+  <div class="app-shell no-print hidden" id="appShell">
     <!-- Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-logo">🐾</div>
         <div>
-          <h1>Pet De Anin</h1>
-          <span class="brand-sub">POS & Accounting SaaS</span>
+          <h1>Pet Shop De Anin</h1>
+          <span class="brand-sub">Sales & Petty Cash System</span>
         </div>
       </div>
 
       <nav class="nav-menu">
-        <button class="nav-btn active" data-room="dashboard">
-          <i class="fa-solid fa-chart-pie"></i>
-          <span>1. Dashboard Executive</span>
+        <button class="nav-btn active" data-room="ringkasan">
+          <i class="fa-solid fa-house-chimney-window"></i>
+          <span>1. Ringkasan Penjualan & Kas</span>
         </button>
         <button class="nav-btn" data-room="pos">
           <i class="fa-solid fa-cash-register"></i>
-          <span>2. POS Kasir</span>
+          <span>2. POS Kasir Penjualan</span>
         </button>
         <button class="nav-btn" data-room="pettycash">
           <i class="fa-solid fa-piggy-bank"></i>
           <span>3. Petty Cash Imprest</span>
         </button>
-        <button class="nav-btn" data-room="katalog">
-          <i class="fa-solid fa-box-open"></i>
-          <span>4. Katalog Produk</span>
-        </button>
         <button class="nav-btn" data-room="opname">
           <i class="fa-solid fa-money-bill-wave"></i>
-          <span>5. Cash Opname</span>
+          <span>4. Cash Opname</span>
         </button>
         <button class="nav-btn" data-room="jurnal">
           <i class="fa-solid fa-book-open"></i>
-          <span>6. Jurnal Umum</span>
+          <span>5. Jurnal Umum</span>
         </button>
         <button class="nav-btn" data-room="neraca">
           <i class="fa-solid fa-scale-balanced"></i>
-          <span>7. Neraca Saldo</span>
+          <span>6. Neraca Saldo</span>
         </button>
       </nav>
 
@@ -59,8 +98,8 @@
           <span class="dot"></span>
           <span id="dbStatusText">Mode Lokal Aktif</span>
         </div>
-        <button class="btn-reset" id="btnResetDemo" title="Reset ke data awal">
-          <i class="fa-solid fa-rotate-left"></i> Reset Data Demo
+        <button class="btn-logout" id="btnLogout">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar / Kunci Akses
         </button>
       </div>
     </aside>
@@ -73,31 +112,38 @@
             <i class="fa-solid fa-bars"></i>
           </button>
           <div>
-            <h2 id="roomTitle">Dashboard Executive</h2>
-            <p id="roomSubtitle">Ringkasan performa keuangan & stok Cafe Pet De Anin</p>
+            <h2 id="roomTitle">Ringkasan Penjualan & Kas</h2>
+            <p id="roomSubtitle">Pantauan arus kas penjualan & dana kas kecil Pet Shop De Anin</p>
           </div>
         </div>
         <div class="topbar-right">
           <div class="date-pill" id="todayDate"></div>
-          <div class="user-pill">🐹 Anin Admin</div>
+          <div class="user-pill">🐾 Admin</div>
         </div>
       </header>
 
-      <!-- ROOM 1: DASHBOARD EXECUTIVE -->
-      <section class="room active" id="room-dashboard">
+      <!-- ROOM 1: RINGKASAN PENJUALAN & KAS -->
+      <section class="room active" id="room-ringkasan">
+        <div class="room-action-bar">
+          <span class="scope-tag"><i class="fa-solid fa-paw"></i> Fokus: Divisi Penjualan & Pengelolaan Kas Kecil</span>
+          <button class="btn-reset-sm" id="btnResetAll">
+            <i class="fa-solid fa-rotate-left"></i> Reset Semua Data Aplikasi
+          </button>
+        </div>
+
         <div class="kpi-grid">
           <div class="kpi-card pastel-pink">
             <div class="kpi-icon"><i class="fa-solid fa-coins"></i></div>
             <div>
-              <span class="kpi-label">Total Penjualan</span>
+              <span class="kpi-label">Total Pendapatan Penjualan</span>
               <h3 id="kpiSales">Rp 0</h3>
             </div>
           </div>
           <div class="kpi-card pastel-yellow">
-            <div class="kpi-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="kpi-icon"><i class="fa-solid fa-receipt"></i></div>
             <div>
-              <span class="kpi-label">Laba Kotor (Penjualan - HPP)</span>
-              <h3 id="kpiGrossProfit">Rp 0</h3>
+              <span class="kpi-label">Total Transaksi POS</span>
+              <h3 id="kpiTxCount">0 Transaksi</h3>
             </div>
           </div>
           <div class="kpi-card pastel-mint">
@@ -139,24 +185,31 @@
 
           <div class="card">
             <div class="card-header">
-              <h3><i class="fa-solid fa-triangle-exclamation"></i> Pantauan Stok Produk</h3>
+              <h3><i class="fa-solid fa-paw"></i> Ringkasan Kas Kecil (Imprest)</h3>
             </div>
-            <div id="dashStockList" class="stock-alert-list"></div>
+            <div class="mini-summary-list" id="dashPettySummary"></div>
           </div>
         </div>
       </section>
 
-      <!-- ROOM 2: POS KASIR -->
+      <!-- ROOM 2: POS KASIR PENJUALAN -->
       <section class="room" id="room-pos">
+        <div class="room-action-bar">
+          <span class="scope-tag"><i class="fa-solid fa-bag-shopping"></i> Khusus Penjualan Produk & Jasa Hewan Peliharaan</span>
+          <button class="btn-reset-sm" id="btnResetPOS">
+            <i class="fa-solid fa-rotate-left"></i> Reset Data Penjualan POS
+          </button>
+        </div>
+
         <div class="pos-layout">
           <div class="pos-catalog card">
             <div class="pos-toolbar">
-              <input type="text" id="posSearch" class="input-field" placeholder="Cari menu cafe atau produk pet..." />
+              <input type="text" id="posSearch" class="input-field" placeholder="Cari pakan, pasir, mainan, atau grooming..." />
               <select id="posCategoryFilter" class="input-field">
-                <option value="ALL">Semua Kategori</option>
-                <option value="Cafe">Cafe & Minuman</option>
-                <option value="Pet Food">Pet Food</option>
-                <option value="Aksesoris">Aksesoris & Grooming</option>
+                <option value="ALL">Semua Kategori Pet</option>
+                <option value="Pet Food">Pakan Hewan</option>
+                <option value="Aksesoris">Aksesoris & Mainan</option>
+                <option value="Perawatan">Vitamin & Grooming</option>
               </select>
             </div>
             <div class="pos-grid" id="posProductGrid"></div>
@@ -171,24 +224,23 @@
               <p class="empty-state">Belum ada item di keranjang.</p>
             </div>
             <div class="cart-summary">
-              <div class="summary-row">
-                <span>Total HPP (Perpetual)</span>
-                <strong id="cartTotalCogs">Rp 0</strong>
-              </div>
               <div class="summary-row total-row">
                 <span>Total Bayar</span>
                 <strong id="cartTotalPrice">Rp 0</strong>
               </div>
               <div class="form-group">
+                <label for="posCustomerName">Nama Pelanggan / Pemilik Anabul</label>
+                <input type="text" id="posCustomerName" class="input-field" placeholder="Pelanggan Umum" />
+              </div>
+              <div class="form-group">
                 <label for="posPaymentMethod">Metode Pembayaran</label>
                 <select id="posPaymentMethod" class="input-field">
-                  <option value="Tunai">Tunai (Kas Besar)</option>
-                  <option value="QRIS">QRIS (Kas Besar)</option>
-                  <option value="Transfer">Transfer Bank (Kas Besar)</option>
+                  <option value="Tunai">Tunai (111 - Kas Besar)</option>
+                  <option value="QRIS">QRIS / Transfer (113 - Bank)</option>
                 </select>
               </div>
               <button class="btn-primary btn-block" id="btnCheckout">
-                <i class="fa-solid fa-check-circle"></i> Proses Bayar & Jurnal Otomatis
+                <i class="fa-solid fa-check-circle"></i> Proses Bayar & Cetak Struk
               </button>
             </div>
           </div>
@@ -197,6 +249,13 @@
 
       <!-- ROOM 3: PETTY CASH IMPREST -->
       <section class="room" id="room-pettycash">
+        <div class="room-action-bar">
+          <span class="scope-tag"><i class="fa-solid fa-piggy-bank"></i> Sistem Dana Tetap (Imprest Fund System)</span>
+          <button class="btn-reset-sm" id="btnResetPettyCash">
+            <i class="fa-solid fa-rotate-left"></i> Reset Voucher Kas Kecil
+          </button>
+        </div>
+
         <div class="kpi-grid cols-3">
           <div class="kpi-card pastel-lavender">
             <div class="kpi-icon"><i class="fa-solid fa-vault"></i></div>
@@ -232,16 +291,18 @@
                 <input type="date" id="pcDate" class="input-field" required />
               </div>
               <div class="form-group">
-                <label>Kategori Beban</label>
+                <label>Akun Beban</label>
                 <select id="pcAccount" class="input-field" required>
-                  <option value="512">512 - Beban Operasional & Perlengkapan</option>
+                  <option value="512">512 - Beban Perlengkapan Toko</option>
                   <option value="513">513 - Beban Listrik, Air & Internet</option>
-                  <option value="514">514 - Beban Kebersihan & Perawatan Hewan</option>
+                  <option value="515">515 - Beban Kebersihan & Perawatan Hewan</option>
+                  <option value="516">516 - Beban Transportasi & Pengiriman</option>
+                  <option value="518">518 - Beban Lain-lain / Operasional</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Keterangan Pengeluaran</label>
-                <input type="text" id="pcDesc" class="input-field" placeholder="Contoh: Beli tisu, galon, serbuk kayu" required />
+                <input type="text" id="pcDesc" class="input-field" placeholder="Contoh: Beli tisu, kantong plastik, disinfektan" required />
               </div>
               <div class="form-group">
                 <label>Nominal (Rp)</label>
@@ -278,75 +339,15 @@
         </div>
       </section>
 
-      <!-- ROOM 4: KATALOG PRODUK -->
-      <section class="room" id="room-katalog">
-        <div class="two-col-grid narrow-left">
-          <div class="card">
-            <div class="card-header">
-              <h3><i class="fa-solid fa-circle-plus"></i> Tambah Produk Baru</h3>
-            </div>
-            <form id="productForm" class="stack-form">
-              <div class="form-group">
-                <label>Nama Produk</label>
-                <input type="text" id="prodName" class="input-field" placeholder="Contoh: Strawberry Paw Milk" required />
-              </div>
-              <div class="form-group">
-                <label>Kategori</label>
-                <select id="prodCategory" class="input-field">
-                  <option value="Cafe">Cafe & Minuman</option>
-                  <option value="Pet Food">Pet Food</option>
-                  <option value="Aksesoris">Aksesoris & Grooming</option>
-                </select>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Harga Beli / HPP (Rp)</label>
-                  <input type="number" id="prodCost" class="input-field" min="0" required />
-                </div>
-                <div class="form-group">
-                  <label>Harga Jual (Rp)</label>
-                  <input type="number" id="prodPrice" class="input-field" min="0" required />
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Stok Awal</label>
-                  <input type="number" id="prodStock" class="input-field" min="0" value="10" required />
-                </div>
-                <div class="form-group">
-                  <label>Ikon Emoji</label>
-                  <input type="text" id="prodEmoji" class="input-field" value="🐾" maxlength="4" />
-                </div>
-              </div>
-              <button type="submit" class="btn-primary">Simpan ke Katalog</button>
-            </form>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3><i class="fa-solid fa-boxes-stacked"></i> Daftar Katalog & Stok Perpetual</h3>
-            </div>
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Produk</th>
-                    <th>Kategori</th>
-                    <th class="text-right">HPP</th>
-                    <th class="text-right">Harga Jual</th>
-                    <th class="text-center">Stok</th>
-                    <th class="text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="catalogTable"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ROOM 5: CASH OPNAME -->
+      <!-- ROOM 4: CASH OPNAME -->
       <section class="room" id="room-opname">
+        <div class="room-action-bar">
+          <span class="scope-tag"><i class="fa-solid fa-money-bill-wave"></i> Pemeriksaan Fisik Uang Tunai & Rekonsiliasi</span>
+          <button class="btn-reset-sm" id="btnResetOpname">
+            <i class="fa-solid fa-rotate-left"></i> Reset Hitungan Cash Opname
+          </button>
+        </div>
+
         <div class="two-col-grid">
           <div class="card">
             <div class="card-header">
@@ -395,15 +396,19 @@
             <button class="btn-primary btn-block" id="btnPostOpname" style="margin-top: 16px;">
               <i class="fa-solid fa-pen-to-square"></i> Posting Jurnal Penyesuaian Selisih Kas
             </button>
-            <button class="btn-secondary btn-block" id="btnResetOpname" style="margin-top: 10px;">
-              Reset Hitungan Pecahan
-            </button>
           </div>
         </div>
       </section>
 
-      <!-- ROOM 6: JURNAL UMUM -->
+      <!-- ROOM 5: JURNAL UMUM -->
       <section class="room" id="room-jurnal">
+        <div class="room-action-bar">
+          <span class="scope-tag"><i class="fa-solid fa-book-open"></i> 26 Akun Standar Akuntansi (SAK)</span>
+          <button class="btn-reset-sm" id="btnResetJournal">
+            <i class="fa-solid fa-rotate-left"></i> Reset Jurnal ke Saldo Awal
+          </button>
+        </div>
+
         <div class="card" style="margin-bottom: 20px;">
           <div class="card-header">
             <h3><i class="fa-solid fa-feather-pointed"></i> Input Jurnal Manual</h3>
@@ -421,7 +426,15 @@
         <div class="card">
           <div class="card-header">
             <h3><i class="fa-solid fa-book"></i> Buku Jurnal Umum</h3>
-            <input type="text" id="journalSearch" class="input-field search-sm" placeholder="Filter keterangan / akun..." />
+            <div class="header-actions">
+              <input type="text" id="journalSearch" class="input-field search-sm" placeholder="Filter keterangan / akun..." />
+              <button class="btn-excel" id="btnExportJournalExcel">
+                <i class="fa-solid fa-file-excel"></i> Excel
+              </button>
+              <button class="btn-pdf" id="btnExportJournalPDF">
+                <i class="fa-solid fa-file-pdf"></i> PDF
+              </button>
+            </div>
           </div>
           <div class="table-wrap">
             <table class="data-table">
@@ -448,8 +461,15 @@
         </div>
       </section>
 
-      <!-- ROOM 7: NERACA SALDO -->
+      <!-- ROOM 6: NERACA SALDO -->
       <section class="room" id="room-neraca">
+        <div class="room-action-bar">
+          <span class="scope-tag"><i class="fa-solid fa-scale-balanced"></i> Uji Keseimbangan Debit & Kredit Otomatis</span>
+          <button class="btn-reset-sm" id="btnResetTB">
+            <i class="fa-solid fa-rotate-left"></i> Reset Neraca Saldo (ke Awal)
+          </button>
+        </div>
+
         <div class="balance-banner" id="trialBalanceBanner">
           <i class="fa-solid fa-circle-check"></i>
           <span id="trialBalanceStatusText">NERACA SALDO SEIMBANG (BALANCED)</span>
@@ -458,6 +478,14 @@
         <div class="card">
           <div class="card-header">
             <h3><i class="fa-solid fa-scale-balanced"></i> Neraca Saldo (Trial Balance)</h3>
+            <div class="header-actions">
+              <button class="btn-excel" id="btnExportTBExcel">
+                <i class="fa-solid fa-file-excel"></i> Excel
+              </button>
+              <button class="btn-pdf" id="btnExportTBPDF">
+                <i class="fa-solid fa-file-pdf"></i> PDF
+              </button>
+            </div>
           </div>
           <div class="table-wrap">
             <table class="data-table">
@@ -485,8 +513,24 @@
     </main>
   </div>
 
+  <!-- MODAL STRUK POS -->
+  <div class="modal-backdrop no-print" id="receiptModal">
+    <div class="modal-box">
+      <div class="receipt-paper" id="receiptContent"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="btnPrintReceipt">
+          <i class="fa-solid fa-print"></i> Cetak Struk / PDF
+        </button>
+        <button class="btn-secondary" id="btnCloseReceipt">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREA KHUSUS CETAK -->
+  <div id="printArea" class="print-only"></div>
+
   <!-- Toast Notification -->
-  <div id="toastContainer" class="toast-container"></div>
+  <div id="toastContainer" class="toast-container no-print"></div>
 
   <script src="app.js"></script>
 </body>
