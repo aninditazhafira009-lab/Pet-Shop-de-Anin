@@ -868,12 +868,17 @@ function exportTBPDF() {
 // FUNGSI RESET PER DASHBOARD / ROOM
 // ==========================================
 function resetAllData() {
-  if (!confirm('Reset seluruh data aplikasi ke kondisi awal?')) return;
-  state = getDefaultState();
+  if (!confirm('Kosongkan seluruh data aplikasi menjadi Rp 0?')) return;
+  state = {
+    imprestLimit: 0,
+    posTxCount: 0,
+    vouchers: [],
+    journals: []
+  };
   cart = [];
   DENOMINATIONS.forEach(d => (opnameCounts[d] = 0));
   saveState();
-  showToast('Seluruh data aplikasi berhasil direset!');
+  showToast('Seluruh data aplikasi berhasil direset ke Rp 0!');
   renderAll();
 }
 
@@ -903,11 +908,11 @@ function resetOpnameData() {
 }
 
 function resetJournalData() {
-  if (!confirm('Reset Jurnal Umum & Neraca Saldo kembali ke saldo awal?')) return;
-  state.journals = getInitialJournals();
+  if (!confirm('Kosongkan seluruh Jurnal Umum & Neraca Saldo menjadi Rp 0?')) return;
+  state.journals = [];
   state.posTxCount = 0;
   saveState();
-  showToast('Jurnal Umum & Neraca Saldo berhasil direset ke saldo awal!');
+  showToast('Jurnal Umum & Neraca Saldo berhasil dikosongkan ke Rp 0!');
   renderAll();
 }
 
@@ -1008,4 +1013,5 @@ function verifikasiMasuk() {
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('appShell').style.display = 'flex';
 }
+
 
