@@ -1013,5 +1013,29 @@ function verifikasiMasuk() {
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('appShell').style.display = 'flex';
 }
+function setPlafonDana() {
+  const input = prompt('Masukkan nominal Plafon Dana Tetap Kas Kecil (Rp):', '1500000');
+  const nominal = Number(input);
+  if (!nominal || nominal <= 0) return;
+
+  state.imprestLimit = nominal;
+
+  // Opsional: langsung buat jurnal pembentukan kas kecil
+  if (confirm(`Catat juga jurnal pembentukan Kas Kecil sebesar ${formatRp(nominal)} ke Jurnal Umum?`)) {
+    const today = getTodayISO();
+    const ref = 'PFN-' + Date.now().toString().slice(-4);
+    addJournalEntries([
+      { id: ref + 'd', date: today, ref, desc: 'Pembentukan Dana Kas Kecil (Imprest)', account: '112', debit: nominal, credit: 0 },
+      { id: ref + 'k', date: today, ref, desc: 'Pembentukan Dana Kas Kecil (Imprest)', account: '111', debit: 0, credit: nominal }
+    ]);
+  } else {
+    saveState();
+  }
+
+  showToast(`Plafon Dana Tetap berhasil diatur ke ${formatRp(nominal)}!`);
+  renderAll();
+}
+
+document.getElementById('btnSetPlafon')?.addEventListener('click', setPlafonDana);
 
 
