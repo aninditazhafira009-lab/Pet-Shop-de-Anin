@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Pet De Anin - Sistem Kasir & Petty Cash Akuntansi</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://jsdelivr.net"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR NAVIGASI 5 ROOM DASHBOARD -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>🐾 Cafe Pet De Anin</h2>
+                <p>POS & Petty Cash SIA</p>
+            </div>
+            
+            <div class="role-badge">
+                Fokus: <strong>Penjualan & Petty Cash</strong>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" onclick="bukaRoom('room-executive', this)">
+                    📊 1. Executive Summary
+                </button>
+                <button class="nav-btn" onclick="bukaRoom('room-kasir', this)">
+                    🛒 2. POS Kasir (Penjualan)
+                </button>
+                <button class="nav-btn" onclick="bukaRoom('room-petty', this)">
+                    💰 3. Petty Cash (Imprest)
+                </button>
+                <button class="nav-btn" onclick="bukaRoom('room-opname', this)">
+                    🔍 4. Cash Opname & Audit
+                </button>
+                <button class="nav-btn" onclick="bukaRoom('room-akuntansi', this)">
+                    📚 5. Laporan Akuntansi & COA
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <small>Standar: SAK EMKM • Imprest System</small>
+            </div>
+        </aside>
+
+        <!-- AREA KONTEN UTAMA -->
+        <main class="main-content">
+            
+            <!-- ROOM 1: EXECUTIVE SUMMARY -->
+            <section id="room-executive" class="room active">
+                <header class="room-header">
+                    <h1>Executive Summary Dashboard</h1>
+                    <p>Monitoring arus kas penjualan dan pengendalian dana kas kecil (Petty Cash) secara real-time.</p>
+                </header>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Total Pendapatan Penjualan</h3>
+                        <p class="angka hijau" id="stat-omzet">Rp 0</p>
+                        <small>Akun 4-1101 s.d 4-1103</small>
+                    </div>
+                    <div class="card">
+                        <h3>Kas Besar (Laci Kasir)</h3>
+                        <p class="angka" id="stat-kas-besar">Rp 0</p>
+                        <small>Akun 1-1101 (Tunai POS)</small>
+                    </div>
+                    <div class="card">
+                        <h3>Sisa Fisik Petty Cash</h3>
+                        <p class="angka coklat" id="stat-petty-sisa">Rp 1.000.000</p>
+                        <small>Akun 1-1102 (Plafon Rp 1 Jt)</small>
+                    </div>
+                    <div class="card">
+                        <h3>Kas di Bank (QRIS/Transfer)</h3>
+                        <p class="angka" id="stat-kas-bank">Rp 0</p>
+                        <small>Akun 1-1103</small>
+                    </div>
+                </div>
+
+                <div class="panel-box">
+                    <h3>Status Pengendalian Internal (Internal Control)</h3>
+                    <div id="alert-box" class="alert-info">Memuat status pengendalian kas...</div>
+                </div>
+            </section>
+
+            <!-- ROOM 2: POS KASIR (SIKLUS PENJUALAN) -->
+            <section id="room-kasir" class="room">
+                <header class="room-header">
+                    <h1>Front Desk POS Kasir</h1>
+                    <p>Siklus Pendapatan & Pencatatan Persediaan Perpetual Otomatis (Pet Shop & Cafe).</p>
+                </header>
+
+                <div class="kasir-layout">
+                    <div class="panel-box">
+                        <h3>Katalog Produk & Layanan</h3>
+                        <div id="daftar-produk" class="produk-grid"></div>
+                    </div>
+
+                    <div class="panel-box">
+                        <h3>Struk Transaksi Pelanggan</h3>
+                        <table class="tabel-mini">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Subtotal</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keranjang-body"></tbody>
+                        </table>
+
+                        <div class="total-area">
+                            <h4>Total Tagihan: <span id="kasir-total">Rp 0</span></h4>
+                            <label>Metode Pembayaran:</label>
+                            <select id="metode-bayar" class="input-field">
+                                <option value="1-1101">Tunai (Masuk 1-1101 Kas Besar)</option>
+                                <option value="1-1103">QRIS / Transfer (Masuk 1-1103 Kas di Bank)</option>
+                            </select>
+                            <button class="btn-primary full" onclick="prosesTransaksiKasir()">
+                                ✅ Proses Bayar & Auto-Jurnal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ROOM 3: PETTY CASH VAULT (IMPREST SYSTEM) -->
+            <section id="room-petty" class="room">
+                <header class="room-header">
+                    <h1>Buku Kas Kecil (Petty Cash Imprest System)</h1>
+                    <p>Dana Tetap ditetapkan sebesar <strong>Rp 1.000.000</strong> (Akun 1-1102). Pengeluaran dicatat sebagai voucher hingga pengisian kembali.</p>
+                </header>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Dana Tetap (Imprest)</h3>
+                        <p class="angka">Rp 1.000.000</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Voucher Pending</h3>
+                        <p class="angka merah" id="petty-pending-total">Rp 0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Sisa Uang Fisik di Kotak</h3>
+                        <p class="angka hijau" id="petty-fisik-sisa">Rp 1.000.000</p>
+                    </div>
+                </div>
+
+                <div class="kasir-layout">
+                    <div class="panel-box">
+                        <h3>Catat Voucher Pengeluaran Kas Kecil</h3>
+                        <form id="form-petty" onsubmit="tambahPettyCash(event)">
+                            <label>Nomor Bukti (Voucher):</label>
+                            <input type="text" id="pc-bukti" class="input-field" placeholder="Contoh: PC-001" required>
+
+                            <label>Akun Beban Operasional (Standar SAK EMKM):</label>
+                            <select id="pc-akun" class="input-field" required>
+                                <option value="6-1101">6-1101 - Beban Perlengkapan Toko & Kemasan</option>
+                                <option value="6-1102">6-1102 - Beban Perlengkapan Habis Pakai Grooming</option>
+                                <option value="6-1103">6-1103 - Beban Bahan Pembantu Dapur & Cafe</option>
+                                <option value="6-1104">6-1104 - Beban Kebersihan, Sanitasi & Disinfektan</option>
+                                <option value="6-1105">6-1105 - Beban Transportasi, Parkir & Kurir Lokal</option>
+                                <option value="6-1201">6-1201 - Beban Listrik, Air & Internet Darurat</option>
+                                <option value="6-1202">6-1202 - Beban Pemeliharaan & Perbaikan Ringan</option>
+                                <option value="6-1203">6-1203 - Beban Konsumsi Karyawan & Lembur</option>
+                            </select>
+
+                            <label>Keterangan Pengeluaran:</label>
+                            <input type="text" id="pc-ket" class="input-field" placeholder="Contoh: Beli es batu, galon air & plastik kemasan" required>
+
+                            <label>Nominal (Rp):</label>
+                            <input type="number" id="pc-nominal" class="input-field" min="1000" required>
+
+                            <button type="submit" class="btn-primary full">Simpan Voucher Kas Kecil</button>
+                        </form>
+                    </div>
+
+                    <div class="panel-box">
+                        <div class="flex-between">
+                            <h3>Daftar Voucher Kas Kecil</h3>
+                            <button class="btn-warning" onclick="prosesReplenish()">
+                                🔄 Replenish (Isi Ulang & Jurnal)
+                            </button>
+                        </div>
+                        <table class="tabel-data">
+                            <thead>
+                                <tr>
+                                    <th>No Bukti</th>
+                                    <th>Kode Akun</th>
+                                    <th>Keterangan</th>
+                                    <th>Nominal</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-petty-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ROOM 4: CASH OPNAME & AUDIT -->
+            <section id="room-opname" class="room">
+                <header class="room-header">
+                    <h1>Cash Opname & Audit Fisik Kas</h1>
