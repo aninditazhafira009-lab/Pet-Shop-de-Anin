@@ -1,5 +1,5 @@
 // ==========================================
-// KONFIGURASI SUPABASE - CAFE PET DE ANIN
+// KONFIGURASI SUPABASE - PET SHOP DE ANIN
 // ==========================================
 const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
 const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
@@ -15,66 +15,106 @@ if (
 }
 
 // ==========================================
-// CHART OF ACCOUNTS (COA)
+// KONFIGURASI PIN VERIFIKASI ADMIN
+// ==========================================
+const ADMIN_PIN = '123456';
+const AUTH_SESSION_KEY = 'petshop_de_anin_auth';
+
+// ==========================================
+// CHART OF ACCOUNTS (COA) STANDAR AKUNTANSI
 // ==========================================
 const COA = {
+  // 100 - ASET
   '111': { name: 'Kas Besar', type: 'Aset', normal: 'D' },
-  '112': { name: 'Kas Kecil (Imprest)', type: 'Aset', normal: 'D' },
-  '113': { name: 'Persediaan Barang Dagang', type: 'Aset', normal: 'D' },
+  '112': { name: 'Kas Kecil (Petty Cash Imprest)', type: 'Aset', normal: 'D' },
+  '113': { name: 'Bank / Rekening Giro', type: 'Aset', normal: 'D' },
+  '114': { name: 'Piutang Usaha', type: 'Aset', normal: 'D' },
+  '115': { name: 'Perlengkapan Toko (Supplies)', type: 'Aset', normal: 'D' },
+  '116': { name: 'Beban Dibayar di Muka', type: 'Aset', normal: 'D' },
+  '121': { name: 'Peralatan Toko', type: 'Aset', normal: 'D' },
+  '122': { name: 'Akumulasi Penyusutan Peralatan', type: 'Aset (Kontra)', normal: 'K' },
+
+  // 200 - LIABILITAS
+  '211': { name: 'Utang Usaha', type: 'Liabilitas', normal: 'K' },
+  '212': { name: 'Utang Beban (Accrued Expense)', type: 'Liabilitas', normal: 'K' },
+  '213': { name: 'Pendapatan Diterima di Muka', type: 'Liabilitas', normal: 'K' },
+
+  // 300 - EKUITAS
   '311': { name: 'Modal Pemilik', type: 'Ekuitas', normal: 'K' },
-  '411': { name: 'Pendapatan Penjualan', type: 'Pendapatan', normal: 'K' },
-  '412': { name: 'Pendapatan Selisih Kas', type: 'Pendapatan', normal: 'K' },
-  '511': { name: 'Harga Pokok Penjualan (HPP)', type: 'Beban', normal: 'D' },
-  '512': { name: 'Beban Operasional & Perlengkapan', type: 'Beban', normal: 'D' },
+  '312': { name: 'Prive Pemilik', type: 'Ekuitas (Kontra)', normal: 'D' },
+
+  // 400 - PENDAPATAN
+  '411': { name: 'Pendapatan Penjualan Pet Shop', type: 'Pendapatan', normal: 'K' },
+  '412': { name: 'Pendapatan Jasa Grooming & Penitipan', type: 'Pendapatan', normal: 'K' },
+  '413': { name: 'Retur & Potongan Penjualan', type: 'Pendapatan (Kontra)', normal: 'D' },
+  '414': { name: 'Pendapatan Selisih Kas (Cash Over)', type: 'Pendapatan Lain', normal: 'K' },
+
+  // 500 - BEBAN OPERASIONAL
+  '511': { name: 'Beban Gaji & Komisi', type: 'Beban', normal: 'D' },
+  '512': { name: 'Beban Perlengkapan Toko', type: 'Beban', normal: 'D' },
   '513': { name: 'Beban Listrik, Air & Internet', type: 'Beban', normal: 'D' },
-  '514': { name: 'Beban Kebersihan & Perawatan Hewan', type: 'Beban', normal: 'D' },
-  '515': { name: 'Beban Selisih Kas', type: 'Beban', normal: 'D' }
+  '514': { name: 'Beban Sewa Tempat', type: 'Beban', normal: 'D' },
+  '515': { name: 'Beban Kebersihan & Perawatan Hewan', type: 'Beban', normal: 'D' },
+  '516': { name: 'Beban Transportasi & Pengiriman', type: 'Beban', normal: 'D' },
+  '517': { name: 'Beban Penyusutan Peralatan', type: 'Beban', normal: 'D' },
+  '518': { name: 'Beban Lain-lain / Operasional', type: 'Beban', normal: 'D' },
+  '519': { name: 'Beban Selisih Kas (Cash Short)', type: 'Beban Lain', normal: 'D' }
 };
+
+// ==========================================
+// DAFTAR ITEM KHUSUS PET SHOP (TANPA CAFE)
+// ==========================================
+const PET_ITEMS = [
+  { id: 'PS1', name: 'Dry Food Kucing 1kg', category: 'Pet Food', price: 65000, emoji: '🐱', revenueAcc: '411' },
+  { id: 'PS2', name: 'Dry Food Anjing 1kg', category: 'Pet Food', price: 78000, emoji: '🐶', revenueAcc: '411' },
+  { id: 'PS3', name: 'Timothy Hay Marmut 500g', category: 'Pet Food', price: 55000, emoji: '🐹', revenueAcc: '411' },
+  { id: 'PS4', name: 'Pelet Kelinci & Guinea Pig', category: 'Pet Food', price: 38000, emoji: '🐰', revenueAcc: '411' },
+  { id: 'PS5', name: 'Pasir Kucing Tofu Wangi 7L', category: 'Perawatan', price: 62000, emoji: '🧼', revenueAcc: '411' },
+  { id: 'PS6', name: 'Vitamin Bulu & Imun Hewan', category: 'Perawatan', price: 45000, emoji: '💊', revenueAcc: '411' },
+  { id: 'PS7', name: 'Kalung Lonceng Pastel', category: 'Aksesoris', price: 28000, emoji: '🎀', revenueAcc: '411' },
+  { id: 'PS8', name: 'Mainan Bola & Teaser Kucing', category: 'Aksesoris', price: 32000, emoji: '🧶', revenueAcc: '411' },
+  { id: 'PS9', name: 'Jasa Grooming Mandi Sehat', category: 'Perawatan', price: 75000, emoji: '🛁', revenueAcc: '412' },
+  { id: 'PS10', name: 'Jasa Potong Kuku & Ear Clean', category: 'Perawatan', price: 30000, emoji: '✂️', revenueAcc: '412' }
+];
 
 const DENOMINATIONS = [100000, 50000, 20000, 10000, 5000, 2000, 1000, 500];
-const STORAGE_KEY = 'pet_de_anin_pos_v1';
+const STORAGE_KEY = 'petshop_de_anin_v3';
 
 const ROOM_META = {
-  dashboard: ['Dashboard Executive', 'Ringkasan performa keuangan & stok Cafe Pet De Anin'],
-  pos: ['POS Kasir', 'Transaksi penjualan & pemotongan stok perpetual otomatis'],
+  ringkasan: ['Ringkasan Penjualan & Kas', 'Pantauan arus kas penjualan & dana kas kecil Pet Shop De Anin'],
+  pos: ['POS Kasir Penjualan', 'Transaksi penjualan produk & jasa hewan peliharaan + struk cetak'],
   pettycash: ['Petty Cash Imprest', 'Pengelolaan dana kas kecil sistem dana tetap'],
-  katalog: ['Katalog Produk', 'Manajemen item cafe, pet food, harga pokok, dan restok'],
   opname: ['Cash Opname', 'Perhitungan fisik uang tunai & penyesuaian selisih kas'],
-  jurnal: ['Jurnal Umum', 'Catatan kronologis seluruh transaksi otomatis & manual'],
-  neraca: ['Neraca Saldo', 'Rekapitulasi saldo akhir seluruh akun & uji keseimbangan']
+  jurnal: ['Jurnal Umum', 'Catatan kronologis transaksi otomatis & manual + Ekspor Excel/PDF'],
+  neraca: ['Neraca Saldo', 'Rekapitulasi saldo akhir seluruh akun + Ekspor Excel/PDF']
 };
 
-// ==========================================
-// DATA AWAL (SEED DEMO)
-// ==========================================
 function getTodayISO() {
   return new Date().toISOString().split('T')[0];
 }
 
-function getDefaultState() {
+function getInitialJournals() {
   const today = getTodayISO();
+  return [
+    { id: 'INIT1', date: today, ref: 'INIT-01', desc: 'Saldo Awal Kas Besar & Pembentukan Kas Kecil', account: '111', debit: 15000000, credit: 0 },
+    { id: 'INIT2', date: today, ref: 'INIT-01', desc: 'Saldo Awal Kas Besar & Pembentukan Kas Kecil', account: '112', debit: 1500000, credit: 0 },
+    { id: 'INIT3', date: today, ref: 'INIT-01', desc: 'Saldo Awal Kas Besar & Pembentukan Kas Kecil', account: '113', debit: 5000000, credit: 0 },
+    { id: 'INIT4', date: today, ref: 'INIT-01', desc: 'Saldo Awal Kas Besar & Pembentukan Kas Kecil', account: '311', debit: 0, credit: 21500000 }
+  ];
+}
+
+function getDefaultState() {
   return {
     imprestLimit: 1500000,
-    products: [
-      { id: 'P1', name: 'Matcha Paw Latte', category: 'Cafe', cost: 12000, price: 28000, stock: 25, emoji: '🍵' },
-      { id: 'P2', name: 'Caramel Guinea Frappe', category: 'Cafe', cost: 14000, price: 32000, stock: 20, emoji: '🧋' },
-      { id: 'P3', name: 'Timothy Hay Premium 500g', category: 'Pet Food', cost: 35000, price: 55000, stock: 15, emoji: '🌿' },
-      { id: 'P4', name: 'Pelet Marmut & Kelinci', category: 'Pet Food', cost: 22000, price: 38000, stock: 18, emoji: '🐹' },
-      { id: 'P5', name: 'Creamy Cat Treat Pack', category: 'Pet Food', cost: 15000, price: 26000, stock: 30, emoji: '🐱' },
-      { id: 'P6', name: 'Mini Grooming & Nail Trim', category: 'Aksesoris', cost: 15000, price: 45000, stock: 99, emoji: '🛁' }
-    ],
+    posTxCount: 0,
     vouchers: [],
-    journals: [
-      { id: 'J1', date: today, ref: 'INIT-01', desc: 'Setoran Modal Awal & Pembentukan Kas Kecil', account: '111', debit: 15000000, credit: 0 },
-      { id: 'J2', date: today, ref: 'INIT-01', desc: 'Setoran Modal Awal & Pembentukan Kas Kecil', account: '112', debit: 1500000, credit: 0 },
-      { id: 'J3', date: today, ref: 'INIT-01', desc: 'Setoran Modal Awal & Pembentukan Kas Kecil', account: '113', debit: 3500000, credit: 0 },
-      { id: 'J4', date: today, ref: 'INIT-01', desc: 'Setoran Modal Awal & Pembentukan Kas Kecil', account: '311', debit: 0, credit: 20000000 }
-    ]
+    journals: getInitialJournals()
   };
 }
 
 let state = loadState();
 let cart = [];
+let lastReceiptHTML = '';
 let opnameCounts = {};
 DENOMINATIONS.forEach(d => (opnameCounts[d] = 0));
 
@@ -92,12 +132,16 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-async function syncJournalToSupabase(entries) {
+async function syncSupabase(table, payload, mode = 'insert') {
   if (!supabaseClient) return;
   try {
-    await supabaseClient.from('journals').insert(entries);
+    if (mode === 'insert') {
+      await supabaseClient.from(table).insert(payload);
+    } else if (mode === 'clear_vouchers') {
+      await supabaseClient.from('vouchers').delete().neq('id', '');
+    }
   } catch (err) {
-    console.warn('Supabase sync skipped:', err.message);
+    console.warn(`Supabase (${table}) skipped:`, err.message);
   }
 }
 
@@ -121,7 +165,7 @@ function showToast(msg) {
 function addJournalEntries(entries) {
   state.journals.push(...entries);
   saveState();
-  syncJournalToSupabase(entries);
+  syncSupabase('journals', entries, 'insert');
 }
 
 function getAccountBalance(code) {
@@ -138,7 +182,49 @@ function getAccountBalance(code) {
 }
 
 // ==========================================
-// NAVIGASI 7 ROOM
+// VERIFIKASI AWAL ADMIN (AUTH GATE)
+// ==========================================
+function checkAuth() {
+  const isLogged = sessionStorage.getItem(AUTH_SESSION_KEY);
+  if (isLogged) {
+    document.getElementById('authScreen').classList.add('hidden');
+    document.getElementById('appShell').classList.remove('hidden');
+  } else {
+    document.getElementById('authScreen').classList.remove('hidden');
+    document.getElementById('appShell').classList.add('hidden');
+  }
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const identity = document.getElementById('authIdentity').value.trim();
+  const pin = document.getElementById('authPin').value.trim();
+  const errEl = document.getElementById('authError');
+
+  if (!identity || identity.length < 4) {
+    errEl.textContent = 'Masukkan Email atau No. Telepon Admin yang valid.';
+    return;
+  }
+  if (pin !== ADMIN_PIN) {
+    errEl.textContent = 'PIN Verifikasi salah! Gunakan PIN demo: 123456';
+    return;
+  }
+
+  errEl.textContent = '';
+  sessionStorage.setItem(AUTH_SESSION_KEY, identity);
+  checkAuth();
+  showToast('Verifikasi berhasil! Selamat datang di Pet Shop De Anin.');
+}
+
+function handleLogout() {
+  sessionStorage.removeItem(AUTH_SESSION_KEY);
+  document.getElementById('authPin').value = '';
+  checkAuth();
+  showToast('Sesi Admin dikunci.');
+}
+
+// ==========================================
+// NAVIGASI 6 ROOM
 // ==========================================
 function switchRoom(roomId) {
   document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
@@ -156,24 +242,24 @@ function switchRoom(roomId) {
 }
 
 // ==========================================
-// RENDER 1: DASHBOARD EXECUTIVE
+// ROOM 1: RINGKASAN PENJUALAN & KAS
 // ==========================================
-function renderDashboard() {
-  const sales = getAccountBalance('411');
-  const cogs = getAccountBalance('511');
+function renderRingkasan() {
+  const salesGoods = getAccountBalance('411');
+  const salesServices = getAccountBalance('412');
+  const totalSales = salesGoods + salesServices;
   const mainCash = getAccountBalance('111');
+  const bankCash = getAccountBalance('113');
   const voucherSum = state.vouchers.reduce((s, v) => s + v.amount, 0);
   const pettyPhysical = state.imprestLimit - voucherSum;
 
-  document.getElementById('kpiSales').textContent = formatRp(sales);
-  document.getElementById('kpiGrossProfit').textContent = formatRp(sales - cogs);
+  document.getElementById('kpiSales').textContent = formatRp(totalSales);
+  document.getElementById('kpiTxCount').textContent = `${state.posTxCount} Transaksi`;
   document.getElementById('kpiMainCash').textContent = formatRp(mainCash);
   document.getElementById('kpiPettyCash').textContent = formatRp(pettyPhysical);
 
-  // Recent Journals
   const recent = [...state.journals].slice(-6).reverse();
-  const tbody = document.getElementById('dashRecentJournals');
-  tbody.innerHTML = recent.map(j => `
+  document.getElementById('dashRecentJournals').innerHTML = recent.map(j => `
     <tr>
       <td>${j.date}</td>
       <td>${j.desc}</td>
@@ -183,80 +269,67 @@ function renderDashboard() {
     </tr>
   `).join('');
 
-  // Stock monitor
-  const stockList = document.getElementById('dashStockList');
-  stockList.innerHTML = state.products.map(p => {
-    const low = p.stock <= 5;
-    return `
-      <div class="stock-item">
-        <div>
-          <strong>${p.emoji} ${p.name}</strong>
-          <div style="font-size:0.78rem;color:#7c6f89">${p.category}</div>
-        </div>
-        <span class="badge ${low ? 'badge-low' : 'badge-ok'}">
-          Stok: ${p.stock} ${low ? '(Menipis!)' : ''}
-        </span>
-      </div>
-    `;
-  }).join('');
+  document.getElementById('dashPettySummary').innerHTML = `
+    <div class="mini-item">
+      <span>Plafon Dana Tetap</span>
+      <strong>${formatRp(state.imprestLimit)}</strong>
+    </div>
+    <div class="mini-item">
+      <span>Voucher Aktif (${state.vouchers.length} bukti)</span>
+      <strong style="color:#d64571">${formatRp(voucherSum)}</strong>
+    </div>
+    <div class="mini-item">
+      <span>Sisa Fisik Kas Kecil</span>
+      <strong style="color:#157a55">${formatRp(pettyPhysical)}</strong>
+    </div>
+    <div class="mini-item">
+      <span>Saldo Bank / QRIS (113)</span>
+      <strong>${formatRp(bankCash)}</strong>
+    </div>
+  `;
 }
 
 // ==========================================
-// RENDER 2: POS KASIR (PERPETUAL)
+// ROOM 2: POS KASIR PENJUALAN
 // ==========================================
 function renderPOS() {
   const keyword = document.getElementById('posSearch').value.toLowerCase();
   const cat = document.getElementById('posCategoryFilter').value;
 
-  const filtered = state.products.filter(p => {
-    const matchName = p.name.toLowerCase().includes(keyword);
-    const matchCat = cat === 'ALL' || p.category === cat;
-    return matchName && matchCat;
-  });
+  const filtered = PET_ITEMS.filter(p =>
+    p.name.toLowerCase().includes(keyword) && (cat === 'ALL' || p.category === cat)
+  );
 
-  const grid = document.getElementById('posProductGrid');
-  grid.innerHTML = filtered.map(p => `
+  document.getElementById('posProductGrid').innerHTML = filtered.map(p => `
     <div class="product-card" onclick="addToCart('${p.id}')">
       <div class="product-emoji">${p.emoji}</div>
       <div class="product-title">${p.name}</div>
       <div class="product-price">${formatRp(p.price)}</div>
-      <div class="product-stock">Stok tersedia: ${p.stock}</div>
+      <div class="product-cat-label">${p.category}</div>
     </div>
-  `).join('') || '<p class="empty-state">Produk tidak ditemukan.</p>';
+  `).join('') || '<p class="empty-state">Item tidak ditemukan.</p>';
 
   renderCart();
 }
 
-function addToCart(prodId) {
-  const prod = state.products.find(p => p.id === prodId);
-  if (!prod || prod.stock <= 0) {
-    showToast('Stok produk habis! Silakan restok di Katalog.');
-    return;
-  }
-  const existing = cart.find(c => c.id === prodId);
+function addToCart(itemId) {
+  const item = PET_ITEMS.find(p => p.id === itemId);
+  if (!item) return;
+  const existing = cart.find(c => c.id === itemId);
   if (existing) {
-    if (existing.qty >= prod.stock) {
-      showToast('Jumlah melebihi stok yang tersedia.');
-      return;
-    }
     existing.qty += 1;
   } else {
-    cart.push({ id: prod.id, name: prod.name, price: prod.price, cost: prod.cost, qty: 1 });
+    cart.push({ ...item, qty: 1 });
   }
   renderCart();
 }
 
-function updateCartQty(prodId, delta) {
-  const item = cart.find(c => c.id === prodId);
-  const prod = state.products.find(p => p.id === prodId);
+function updateCartQty(itemId, delta) {
+  const item = cart.find(c => c.id === itemId);
   if (!item) return;
-
   item.qty += delta;
   if (item.qty <= 0) {
-    cart = cart.filter(c => c.id !== prodId);
-  } else if (prod && item.qty > prod.stock) {
-    item.qty = prod.stock;
-    showToast('Stok maksimal tercapai.');
+    cart = cart.filter(c => c.id !== itemId);
   }
   renderCart();
 }
@@ -266,16 +339,12 @@ function renderCart() {
   if (cart.length === 0) {
     box.innerHTML = '<p class="empty-state">Belum ada item di keranjang.</p>';
     document.getElementById('cartTotalPrice').textContent = 'Rp 0';
-    document.getElementById('cartTotalCogs').textContent = 'Rp 0';
     return;
   }
 
   let totalPrice = 0;
-  let totalCogs = 0;
-
   box.innerHTML = cart.map(item => {
     totalPrice += item.price * item.qty;
-    totalCogs += item.cost * item.qty;
     return `
       <div class="cart-row">
         <div>
@@ -292,7 +361,6 @@ function renderCart() {
   }).join('');
 
   document.getElementById('cartTotalPrice').textContent = formatRp(totalPrice);
-  document.getElementById('cartTotalCogs').textContent = formatRp(totalCogs);
 }
 
 function processCheckout() {
@@ -302,34 +370,87 @@ function processCheckout() {
   }
 
   const method = document.getElementById('posPaymentMethod').value;
+  const cashAcc = method === 'Tunai' ? '111' : '113';
+  const customer = document.getElementById('posCustomerName').value.trim() || 'Pelanggan Umum';
   const today = getTodayISO();
+  const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   const ref = 'POS-' + Date.now().toString().slice(-5);
 
   let totalSales = 0;
-  let totalCogs = 0;
+  const revGrouped = {};
+  const purchasedItems = [...cart];
 
   cart.forEach(item => {
-    totalSales += item.price * item.qty;
-    totalCogs += item.cost * item.qty;
-    const prod = state.products.find(p => p.id === item.id);
-    if (prod) prod.stock -= item.qty;
+    const sub = item.price * item.qty;
+    totalSales += sub;
+    revGrouped[item.revenueAcc] = (revGrouped[item.revenueAcc] || 0) + sub;
   });
 
-  // Jurnal Sistem Perpetual: (1) Penjualan, (2) HPP & Persediaan
-  addJournalEntries([
-    { id: ref + 'a', date: today, ref, desc: `Penjualan POS (${method})`, account: '111', debit: totalSales, credit: 0 },
-    { id: ref + 'b', date: today, ref, desc: `Penjualan POS (${method})`, account: '411', debit: 0, credit: totalSales },
-    { id: ref + 'c', date: today, ref, desc: `HPP Penjualan POS (${ref})`, account: '511', debit: totalCogs, credit: 0 },
-    { id: ref + 'd', date: today, ref, desc: `Pengurangan Persediaan (${ref})`, account: '113', debit: 0, credit: totalCogs }
-  ]);
+  const entries = [
+    { id: ref + '-dr', date: today, ref, desc: `Penjualan POS (${method}) - ${customer}`, account: cashAcc, debit: totalSales, credit: 0 }
+  ];
+
+  Object.entries(revGrouped).forEach(([acc, amt], idx) => {
+    entries.push({
+      id: `${ref}-cr${idx}`,
+      date: today,
+      ref,
+      desc: `Penjualan POS (${method}) - ${customer}`,
+      account: acc,
+      debit: 0,
+      credit: amt
+    });
+  });
+
+  state.posTxCount += 1;
+  addJournalEntries(entries);
+
+  const itemsHTML = purchasedItems.map(i => `
+    <div class="receipt-line">
+      <span>${i.name} (${i.qty}x)</span>
+      <span>${formatRp(i.price * i.qty)}</span>
+    </div>
+  `).join('');
+
+  lastReceiptHTML = `
+    <div class="receipt-center">
+      <strong>🐾 PET SHOP DE ANIN 🐾</strong><br/>
+      Semarang, Jawa Tengah<br/>
+      <small>No: ${ref} | ${today} ${timeStr}</small>
+    </div>
+    <div class="receipt-divider"></div>
+    <div>Pelanggan: ${customer}</div>
+    <div>Bayar    : ${method}</div>
+    <div class="receipt-divider"></div>
+    ${itemsHTML}
+    <div class="receipt-divider"></div>
+    <div class="receipt-line">
+      <strong>TOTAL BAYAR</strong>
+      <strong>${formatRp(totalSales)}</strong>
+    </div>
+    <div class="receipt-divider"></div>
+    <div class="receipt-center">
+      Terima kasih telah berbelanja!<br/>
+      Salam sayang untuk anabul 🐾
+    </div>
+  `;
+
+  document.getElementById('receiptContent').innerHTML = lastReceiptHTML;
+  document.getElementById('receiptModal').classList.add('open');
 
   cart = [];
-  showToast(`Transaksi ${ref} berhasil! Jurnal Penjualan & HPP tercatat.`);
+  document.getElementById('posCustomerName').value = '';
+  showToast(`Transaksi ${ref} berhasil dicatat!`);
   renderAll();
 }
 
+function printReceipt() {
+  document.getElementById('printArea').innerHTML = `<div class="print-receipt-wrap">${lastReceiptHTML}</div>`;
+  window.print();
+}
+
 // ==========================================
-// RENDER 3: PETTY CASH IMPREST
+// ROOM 3: PETTY CASH IMPREST
 // ==========================================
 function renderPettyCash() {
   const used = state.vouchers.reduce((s, v) => s + v.amount, 0);
@@ -368,8 +489,11 @@ function handlePettyCashSubmit(e) {
     return;
   }
 
-  state.vouchers.push({ id: 'VC-' + Date.now(), date, account, desc, amount });
+  const voucher = { id: 'VC-' + Date.now(), date, account, desc, amount };
+  state.vouchers.push(voucher);
   saveState();
+  syncSupabase('vouchers', voucher, 'insert');
+
   e.target.reset();
   document.getElementById('pcDate').value = getTodayISO();
   showToast('Voucher kas kecil berhasil dicatat.');
@@ -386,7 +510,6 @@ function replenishPettyCash() {
   const ref = 'PC-' + Date.now().toString().slice(-5);
   const total = state.vouchers.reduce((s, v) => s + v.amount, 0);
 
-  // Kelompokkan beban per akun
   const grouped = {};
   state.vouchers.forEach(v => {
     grouped[v.account] = (grouped[v.account] || 0) + v.amount;
@@ -413,99 +536,17 @@ function replenishPettyCash() {
   });
 
   state.vouchers = [];
+  syncSupabase('vouchers', null, 'clear_vouchers');
   addJournalEntries(entries);
   showToast(`Kas Kecil diisi kembali sebesar ${formatRp(total)}!`);
   renderAll();
 }
 
 // ==========================================
-// RENDER 4: KATALOG PRODUK
-// ==========================================
-function renderCatalog() {
-  const tbody = document.getElementById('catalogTable');
-  tbody.innerHTML = state.products.map(p => `
-    <tr>
-      <td><strong>${p.emoji} ${p.name}</strong></td>
-      <td><span class="badge badge-cat">${p.category}</span></td>
-      <td class="text-right">${formatRp(p.cost)}</td>
-      <td class="text-right">${formatRp(p.price)}</td>
-      <td class="text-center">
-        <span class="badge ${p.stock <= 5 ? 'badge-low' : 'badge-ok'}">${p.stock}</span>
-      </td>
-      <td class="text-center">
-        <button class="btn-sm" onclick="restockProduct('${p.id}')">+Restok</button>
-        <button class="btn-sm danger" onclick="deleteProduct('${p.id}')">Hapus</button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function handleAddProduct(e) {
-  e.preventDefault();
-  const name = document.getElementById('prodName').value.trim();
-  const category = document.getElementById('prodCategory').value;
-  const cost = Number(document.getElementById('prodCost').value);
-  const price = Number(document.getElementById('prodPrice').value);
-  const stock = Number(document.getElementById('prodStock').value);
-  const emoji = document.getElementById('prodEmoji').value.trim() || '🐾';
-
-  const newProd = { id: 'P' + Date.now(), name, category, cost, price, stock, emoji };
-  state.products.push(newProd);
-
-  // Jika stok awal > 0, catat pembelian persediaan tunai
-  if (stock > 0 && cost > 0) {
-    const totalVal = stock * cost;
-    const ref = 'BUY-' + Date.now().toString().slice(-4);
-    const today = getTodayISO();
-    addJournalEntries([
-      { id: ref + 'd', date: today, ref, desc: `Pembelian Stok Awal ${name}`, account: '113', debit: totalVal, credit: 0 },
-      { id: ref + 'k', date: today, ref, desc: `Pembelian Stok Awal ${name}`, account: '111', debit: 0, credit: totalVal }
-    ]);
-  } else {
-    saveState();
-  }
-
-  e.target.reset();
-  document.getElementById('prodEmoji').value = '🐾';
-  showToast(`Produk "${name}" berhasil ditambahkan!`);
-  renderAll();
-}
-
-function restockProduct(prodId) {
-  const prod = state.products.find(p => p.id === prodId);
-  if (!prod) return;
-  const qtyStr = prompt(`Masukkan jumlah restok untuk "${prod.name}" (HPP: ${formatRp(prod.cost)}/unit):`, '10');
-  const qty = Number(qtyStr);
-  if (!qty || qty <= 0) return;
-
-  prod.stock += qty;
-  const totalCost = qty * prod.cost;
-  const today = getTodayISO();
-  const ref = 'RST-' + Date.now().toString().slice(-4);
-
-  addJournalEntries([
-    { id: ref + 'd', date: today, ref, desc: `Restok ${qty}x ${prod.name}`, account: '113', debit: totalCost, credit: 0 },
-    { id: ref + 'k', date: today, ref, desc: `Restok ${qty}x ${prod.name}`, account: '111', debit: 0, credit: totalCost }
-  ]);
-
-  showToast(`Berhasil restok ${qty} unit ${prod.name}!`);
-  renderAll();
-}
-
-function deleteProduct(prodId) {
-  if (!confirm('Hapus produk ini dari katalog?')) return;
-  state.products = state.products.filter(p => p.id !== prodId);
-  saveState();
-  showToast('Produk dihapus dari katalog.');
-  renderAll();
-}
-
-// ==========================================
-// RENDER 5: CASH OPNAME
+// ROOM 4: CASH OPNAME
 // ==========================================
 function renderOpname() {
-  const tbody = document.getElementById('opnameDenomBody');
-  tbody.innerHTML = DENOMINATIONS.map(d => {
+  document.getElementById('opnameDenomBody').innerHTML = DENOMINATIONS.map(d => {
     const qty = opnameCounts[d] || 0;
     return `
       <tr>
@@ -518,7 +559,6 @@ function renderOpname() {
       </tr>
     `;
   }).join('');
-
   calculateOpnameDiff();
 }
 
@@ -580,15 +620,13 @@ function postOpnameAdjustment() {
   const absDiff = Math.abs(diff);
 
   if (diff > 0) {
-    // Cash Over: Dr Kas, Cr Pendapatan Selisih Kas
     addJournalEntries([
       { id: ref + 'd', date: today, ref, desc: 'Penyesuaian Cash Opname (Lebih)', account: target, debit: absDiff, credit: 0 },
-      { id: ref + 'k', date: today, ref, desc: 'Penyesuaian Cash Opname (Lebih)', account: '412', debit: 0, credit: absDiff }
+      { id: ref + 'k', date: today, ref, desc: 'Penyesuaian Cash Opname (Lebih)', account: '414', debit: 0, credit: absDiff }
     ]);
   } else {
-    // Cash Short: Dr Beban Selisih Kas, Cr Kas
     addJournalEntries([
-      { id: ref + 'd', date: today, ref, desc: 'Penyesuaian Cash Opname (Kurang)', account: '515', debit: absDiff, credit: 0 },
+      { id: ref + 'd', date: today, ref, desc: 'Penyesuaian Cash Opname (Kurang)', account: '519', debit: absDiff, credit: 0 },
       { id: ref + 'k', date: today, ref, desc: 'Penyesuaian Cash Opname (Kurang)', account: target, debit: 0, credit: absDiff }
     ]);
   }
@@ -598,14 +636,14 @@ function postOpnameAdjustment() {
 }
 
 // ==========================================
-// RENDER 6: JURNAL UMUM
+// ROOM 5: JURNAL UMUM + EKSPOR
 // ==========================================
 function populateAccountSelects() {
   const opts = Object.entries(COA).map(([code, info]) =>
     `<option value="${code}">${code} - ${info.name}</option>`
   ).join('');
-  document.getElementById('mjDebitAcc').innerHTML = `<option value="">-- Akun Debit --</option>` + opts;
-  document.getElementById('mjCreditAcc').innerHTML = `<option value="">-- Akun Kredit --</option>` + opts;
+  document.getElementById('mjDebitAcc').innerHTML = `<option value="">-- Pilih Akun Debit --</option>` + opts;
+  document.getElementById('mjCreditAcc').innerHTML = `<option value="">-- Pilih Akun Kredit --</option>` + opts;
 }
 
 function renderJournals() {
@@ -619,8 +657,7 @@ function renderJournals() {
   let sumD = 0;
   let sumK = 0;
 
-  const tbody = document.getElementById('journalTableBody');
-  tbody.innerHTML = filtered.map(j => {
+  document.getElementById('journalTableBody').innerHTML = filtered.map(j => {
     sumD += Number(j.debit) || 0;
     sumK += Number(j.credit) || 0;
     return `
@@ -664,40 +701,101 @@ function handleManualJournal(e) {
   renderAll();
 }
 
-// ==========================================
-// RENDER 7: NERACA SALDO
-// ==========================================
-function renderTrialBalance() {
-  let totalD = 0;
-  let totalK = 0;
+function exportJournalExcel() {
+  const rows = state.journals.map(j => ({
+    Tanggal: j.date,
+    Ref: j.ref,
+    Keterangan: j.desc,
+    Kode_Akun: j.account,
+    Nama_Akun: COA[j.account]?.name || '',
+    Debit: Number(j.debit) || 0,
+    Kredit: Number(j.credit) || 0
+  }));
 
-  const rows = Object.entries(COA).map(([code, info]) => {
-    const bal = getAccountBalance(code);
-    if (bal === 0) return '';
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Jurnal Umum');
+  XLSX.writeFile(wb, `Jurnal_Umum_Pet_Shop_De_Anin_${getTodayISO()}.xlsx`);
+  showToast('File Excel Jurnal Umum berhasil diunduh!');
+}
 
-    let colD = 0;
-    let colK = 0;
-    if (info.normal === 'D') {
-      if (bal >= 0) colD = bal; else colK = Math.abs(bal);
-    } else {
-      if (bal >= 0) colK = bal; else colD = Math.abs(bal);
-    }
-
-    totalD += colD;
-    totalK += colK;
-
+function exportJournalPDF() {
+  let sumD = 0, sumK = 0;
+  const rows = state.journals.map(j => {
+    sumD += Number(j.debit) || 0;
+    sumK += Number(j.credit) || 0;
     return `
       <tr>
-        <td><strong>${code}</strong></td>
-        <td>${info.name}</td>
-        <td><span class="badge badge-cat">${info.type}</span></td>
-        <td class="text-right">${colD ? formatRp(colD) : '-'}</td>
-        <td class="text-right">${colK ? formatRp(colK) : '-'}</td>
+        <td>${j.date}</td>
+        <td>${j.ref}</td>
+        <td>${j.desc}</td>
+        <td>${j.account} - ${COA[j.account]?.name || ''}</td>
+        <td style="text-align:right">${j.debit ? formatRp(j.debit) : '-'}</td>
+        <td style="text-align:right">${j.credit ? formatRp(j.credit) : '-'}</td>
       </tr>
     `;
   }).join('');
 
-  document.getElementById('trialBalanceBody').innerHTML = rows;
+  document.getElementById('printArea').innerHTML = `
+    <h2>PET SHOP DE ANIN — JURNAL UMUM</h2>
+    <p>Tanggal Cetak: ${getTodayISO()}</p>
+    <table class="print-report-table">
+      <thead>
+        <tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr>
+          <th colspan="4">TOTAL</th>
+          <th style="text-align:right">${formatRp(sumD)}</th>
+          <th style="text-align:right">${formatRp(sumK)}</th>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+  window.print();
+}
+
+// ==========================================
+// ROOM 6: NERACA SALDO + EKSPOR
+// ==========================================
+function getTrialBalanceData() {
+  const data = [];
+  Object.entries(COA).forEach(([code, info]) => {
+    const bal = getAccountBalance(code);
+    if (bal === 0) return;
+
+    let debit = 0;
+    let credit = 0;
+    if (info.normal === 'D') {
+      if (bal >= 0) debit = bal; else credit = Math.abs(bal);
+    } else {
+      if (bal >= 0) credit = bal; else debit = Math.abs(bal);
+    }
+    data.push({ code, name: info.name, type: info.type, debit, credit });
+  });
+  return data;
+}
+
+function renderTrialBalance() {
+  const data = getTrialBalanceData();
+  let totalD = 0;
+  let totalK = 0;
+
+  document.getElementById('trialBalanceBody').innerHTML = data.map(row => {
+    totalD += row.debit;
+    totalK += row.credit;
+    return `
+      <tr>
+        <td><strong>${row.code}</strong></td>
+        <td>${row.name}</td>
+        <td><span class="badge badge-cat">${row.type}</span></td>
+        <td class="text-right">${row.debit ? formatRp(row.debit) : '-'}</td>
+        <td class="text-right">${row.credit ? formatRp(row.credit) : '-'}</td>
+      </tr>
+    `;
+  }).join('');
+
   document.getElementById('tbTotalDebit').textContent = formatRp(totalD);
   document.getElementById('tbTotalCredit').textContent = formatRp(totalK);
 
@@ -712,21 +810,122 @@ function renderTrialBalance() {
   }
 }
 
+function exportTBExcel() {
+  const data = getTrialBalanceData();
+  const rows = data.map(r => ({
+    Kode_Akun: r.code,
+    Nama_Akun: r.name,
+    Kategori: r.type,
+    Saldo_Debit: r.debit,
+    Saldo_Kredit: r.credit
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Neraca Saldo');
+  XLSX.writeFile(wb, `Neraca_Saldo_Pet_Shop_De_Anin_${getTodayISO()}.xlsx`);
+  showToast('File Excel Neraca Saldo berhasil diunduh!');
+}
+
+function exportTBPDF() {
+  const data = getTrialBalanceData();
+  let totalD = 0, totalK = 0;
+  const rows = data.map(r => {
+    totalD += r.debit;
+    totalK += r.credit;
+    return `
+      <tr>
+        <td>${r.code}</td>
+        <td>${r.name}</td>
+        <td>${r.type}</td>
+        <td style="text-align:right">${r.debit ? formatRp(r.debit) : '-'}</td>
+        <td style="text-align:right">${r.credit ? formatRp(r.credit) : '-'}</td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('printArea').innerHTML = `
+    <h2>PET SHOP DE ANIN — NERACA SALDO</h2>
+    <p>Per Tanggal: ${getTodayISO()}</p>
+    <table class="print-report-table">
+      <thead>
+        <tr><th>Kode</th><th>Nama Akun</th><th>Kategori</th><th>Saldo Debit</th><th>Saldo Kredit</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr>
+          <th colspan="3">TOTAL</th>
+          <th style="text-align:right">${formatRp(totalD)}</th>
+          <th style="text-align:right">${formatRp(totalK)}</th>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+  window.print();
+}
+
+// ==========================================
+// FUNGSI RESET PER DASHBOARD / ROOM
+// ==========================================
+function resetAllData() {
+  if (!confirm('Reset seluruh data aplikasi ke kondisi awal?')) return;
+  state = getDefaultState();
+  cart = [];
+  DENOMINATIONS.forEach(d => (opnameCounts[d] = 0));
+  saveState();
+  showToast('Seluruh data aplikasi berhasil direset!');
+  renderAll();
+}
+
+function resetPOSData() {
+  if (!confirm('Reset keranjang & seluruh riwayat transaksi POS?')) return;
+  cart = [];
+  state.posTxCount = 0;
+  state.journals = state.journals.filter(j => !j.ref.startsWith('POS-'));
+  saveState();
+  showToast('Data penjualan POS berhasil direset!');
+  renderAll();
+}
+
+function resetPettyCashData() {
+  if (!confirm('Reset semua voucher kas kecil yang aktif?')) return;
+  state.vouchers = [];
+  saveState();
+  syncSupabase('vouchers', null, 'clear_vouchers');
+  showToast('Voucher Kas Kecil berhasil direset!');
+  renderAll();
+}
+
+function resetOpnameData() {
+  DENOMINATIONS.forEach(d => (opnameCounts[d] = 0));
+  renderOpname();
+  showToast('Hitungan pecahan Cash Opname berhasil direset!');
+}
+
+function resetJournalData() {
+  if (!confirm('Reset Jurnal Umum & Neraca Saldo kembali ke saldo awal?')) return;
+  state.journals = getInitialJournals();
+  state.posTxCount = 0;
+  saveState();
+  showToast('Jurnal Umum & Neraca Saldo berhasil direset ke saldo awal!');
+  renderAll();
+}
+
 // ==========================================
 // RENDER ALL & INITIALIZATION
 // ==========================================
 function renderAll() {
-  renderDashboard();
+  renderRingkasan();
   renderPOS();
   renderPettyCash();
-  renderCatalog();
   renderOpname();
   renderJournals();
   renderTrialBalance();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Tanggal hari ini
+  checkAuth();
+
   const now = new Date();
   document.getElementById('todayDate').textContent = now.toLocaleDateString('id-ID', {
     weekday: 'long', day: 'numeric', month: 'short', year: 'numeric'
@@ -734,59 +933,59 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pcDate').value = getTodayISO();
   document.getElementById('mjDate').value = getTodayISO();
 
-  // Status Supabase
   if (supabaseClient) {
     document.getElementById('dbStatusText').textContent = 'Supabase Terhubung';
   }
 
   populateAccountSelects();
 
-  // Event Listeners Navigasi
+  // Auth Listeners
+  document.getElementById('authForm').addEventListener('submit', handleLogin);
+  document.getElementById('btnLogout').addEventListener('click', handleLogout);
+
+  // Navigasi
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => switchRoom(btn.dataset.room));
   });
-
   document.getElementById('mobileMenuBtn').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
   });
 
-  // POS Listeners
+  // POS & Modal Struk
   document.getElementById('posSearch').addEventListener('input', renderPOS);
   document.getElementById('posCategoryFilter').addEventListener('change', renderPOS);
-  document.getElementById('btnClearCart').addEventListener('click', () => {
-    cart = [];
-    renderCart();
-  });
+  document.getElementById('btnClearCart').addEventListener('click', () => { cart = []; renderCart(); });
   document.getElementById('btnCheckout').addEventListener('click', processCheckout);
+  document.getElementById('btnPrintReceipt').addEventListener('click', printReceipt);
+  document.getElementById('btnCloseReceipt').addEventListener('click', () => {
+    document.getElementById('receiptModal').classList.remove('open');
+  });
 
-  // Petty Cash Listeners
+  // Petty Cash
   document.getElementById('pettyCashForm').addEventListener('submit', handlePettyCashSubmit);
   document.getElementById('btnReplenish').addEventListener('click', replenishPettyCash);
 
-  // Katalog Listeners
-  document.getElementById('productForm').addEventListener('submit', handleAddProduct);
-
-  // Cash Opname Listeners
+  // Cash Opname
   document.getElementById('opnameTarget').addEventListener('change', calculateOpnameDiff);
   document.getElementById('btnPostOpname').addEventListener('click', postOpnameAdjustment);
-  document.getElementById('btnResetOpname').addEventListener('click', () => {
-    DENOMINATIONS.forEach(d => (opnameCounts[d] = 0));
-    renderOpname();
-  });
 
-  // Jurnal Listeners
+  // Jurnal & Ekspor
   document.getElementById('manualJournalForm').addEventListener('submit', handleManualJournal);
   document.getElementById('journalSearch').addEventListener('input', renderJournals);
+  document.getElementById('btnExportJournalExcel').addEventListener('click', exportJournalExcel);
+  document.getElementById('btnExportJournalPDF').addEventListener('click', exportJournalPDF);
 
-  // Reset Demo Data
-  document.getElementById('btnResetDemo').addEventListener('click', () => {
-    if (!confirm('Reset seluruh data transaksi ke kondisi awal demo?')) return;
-    state = getDefaultState();
-    cart = [];
-    saveState();
-    showToast('Data berhasil direset ke kondisi awal.');
-    renderAll();
-  });
+  // Neraca Saldo Ekspor
+  document.getElementById('btnExportTBExcel').addEventListener('click', exportTBExcel);
+  document.getElementById('btnExportTBPDF').addEventListener('click', exportTBPDF);
+
+  // Reset per Room
+  document.getElementById('btnResetAll').addEventListener('click', resetAllData);
+  document.getElementById('btnResetPOS').addEventListener('click', resetPOSData);
+  document.getElementById('btnResetPettyCash').addEventListener('click', resetPettyCashData);
+  document.getElementById('btnResetOpname').addEventListener('click', resetOpnameData);
+  document.getElementById('btnResetJournal').addEventListener('click', resetJournalData);
+  document.getElementById('btnResetTB').addEventListener('click', resetJournalData);
 
   renderAll();
 });
