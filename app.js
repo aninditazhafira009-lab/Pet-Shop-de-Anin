@@ -989,4 +989,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderAll();
 });
+function verifikasiMasuk() {
+  const identity = document.getElementById('authIdentity').value.trim();
+  const pin = document.getElementById('authPin').value.trim();
+  const errEl = document.getElementById('authError');
+
+  if (!identity || identity.length < 4) {
+    errEl.textContent = 'Masukkan Email atau No. Telepon Admin yang valid.';
+    return;
+  }
+  if (pin !== '123456') {
+    errEl.textContent = 'PIN salah! Gunakan PIN demo: 123456';
+    return;
+  }
+
+  errEl.textContent = '';
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appShell').classList.remove('hidden');
+  document.getElementById('appShell').style.display = 'flex';
+}
 
