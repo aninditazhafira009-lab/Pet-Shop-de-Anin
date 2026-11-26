@@ -2,7 +2,7 @@
 
 Sistem Informasi Akuntansi Kas Kecil (Imprest Fund System) untuk Pet Cafe' de Anin. Aplikasi mencakup manajemen mutasi kas kecil, pencatatan otomatis transaksi, pengelompokan kode akun SIA (100+ COA), ekspor laporan keuangan, download CSV, dan fitur verifikasi integritas data menggunakan audit SHA-256.
 
-🌐 **Demo aplikasi:** [Buka Pet Cafe' de Anin](https://aninditazhafira009-lab.github.io/pet-cafe-sia/)
+🌐 **Demo aplikasi:** [Buka Pet Cafe' de Anin](https://aninditazhafira009-lab.github.io/Pet-Shop-de-Anin/)
 
 ## Identitas tugas
 
